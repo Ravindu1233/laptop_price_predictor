@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <title>Laptop Price Predictor</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="title">Laptop Price Predictor</div>
+      <form action="/" method="POST">
+        <div class="form">
+          <div class="inputfield">
+            <label for="ram">Ram (GB)</label>
+            <input
+              class="input"
+              type="text"
+              name="ram"
+              value="{{ input_data.ram }}"
+              required
+            />
+          </div>
+          <div class="inputfield">
+            <label for="weight">Weight (Kg)</label>
+            <input
+              class="input"
+              type="text"
+              name="weight"
+              value="{{ input_data.weight }}"
+              required
+            />
+          </div>
+          <div class="inputfield">
+            <label for="company">Company</label>
+            <div class="custom_select">
+              <select name="company" id="company">
+                <option value="" hidden>Select</option>
+                <option value="acer" {% if input_data.company == 'acer' %}selected{% endif %}>Acer</option>
+                <option value="apple" {% if input_data.company == 'apple' %}selected{% endif %}>Apple</option>
+                <option value="asus" {% if input_data.company == 'asus' %}selected{% endif %}>Asus</option>
+                <option value="dell" {% if input_data.company == 'dell' %}selected{% endif %}>Dell</option>
+                <option value="hp" {% if input_data.company == 'hp' %}selected{% endif %}>HP</option>
+                <option value="lenovo" {% if input_data.company == 'lenovo' %}selected{% endif %}>Lenovo</option>
+                <option value="msi" {% if input_data.company == 'msi' %}selected{% endif %}>MSI</option>
+                <option value="toshiba" {% if input_data.company == 'toshiba' %}selected{% endif %}>Toshiba</option>
+                <option value="other" {% if input_data.company == 'other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="inputfield">
+            <label for="typename">Type Name</label>
+            <div class="custom_select">
+              <select name="typename" id="typename">
+                <option value="" hidden>Select</option>
+                <option value="2in1convertible" {% if input_data.typename == '2in1convertible' %}selected{% endif %}>2 in 1 Convertible</option>
+                <option value="gaming" {% if input_data.typename == 'gaming' %}selected{% endif %}>Gaming</option>
+                <option value="netbook" {% if input_data.typename == 'netbook' %}selected{% endif %}>Net Book</option>
+                <option value="notebook" {% if input_data.typename == 'notebook' %}selected{% endif %}>Note Book</option>
+                <option value="ultrabook" {% if input_data.typename == 'ultrabook' %}selected{% endif %}>Ultra Book</option>
+                <option value="workstation" {% if input_data.typename == 'workstation' %}selected{% endif %}>Workstation</option>
+              </select>
+            </div>
+          </div>
+          <div class="inputfield">
+            <label for="opsys">Operating System</label>
+            <div class="custom_select">
+              <select name="opsys" id="opsys">
+                <option value="" hidden>Select</option>
+                <option value="windows" {% if input_data.opsys == 'windows' %}selected{% endif %}>Windows</option>
+                <option value="mac" {% if input_data.opsys == 'mac' %}selected{% endif %}>Mac</option>
+                <option value="linux" {% if input_data.opsys == 'linux' %}selected{% endif %}>Linux</option>
+                <option value="other" {% if input_data.opsys == 'other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="inputfield">
+            <label for="cpuname">CPU</label>
+            <div class="custom_select">
+              <select name="cpuname" id="cpuname">
+                <option value="" hidden>Select</option>
+                <option value="intelcorei3" {% if input_data.cpuname == 'intelcorei3' %}selected{% endif %}>Intel Core i3</option>
+                <option value="intelcorei5" {% if input_data.cpuname == 'intelcorei5' %}selected{% endif %}>Intel Core i5</option>
+                <option value="intelcorei7" {% if input_data.cpuname == 'intelcorei7' %}selected{% endif %}>Intel Core i7</option>
+                <option value="amd" {% if input_data.cpuname == 'amd' %}selected{% endif %}>AMD</option>
+                <option value="other" {% if input_data.cpuname == 'other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="inputfield">
+            <label for="gpuname">GPU</label>
+            <div class="custom_select">
+              <select name="gpuname" id="gpuname">
+                <option value="" hidden>Select</option>
+                <option value="intel" {% if input_data.gpuname == 'intel' %}selected{% endif %}>Intel</option>
+                <option value="amd" {% if input_data.gpuname == 'amd' %}selected{% endif %}>AMD</option>
+                <option value="nvidia" {% if input_data.gpuname == 'nvidia' %}selected{% endif %}>Nvidia</option>
+              </select>
+            </div>
+          </div>
+          <div class="check">
+            <div class="checkbox-group">
+              <label for="touchscreen">Touch Screen</label>
+              <input type="checkbox" name="touchscreen" {% if input_data.touchscreen %}checked{% endif %} />
+            </div>
+            <div class="checkbox-group">
+              <label for="ips">IPS</label>
+              <input type="checkbox" name="ips" {% if input_data.ips %}checked{% endif %} />
+            </div>
+          </div>
+          <div class="inputfield">
+            <input class="btn" type="submit" value="Predict Price" />
+          </div>
+        </div>
+      </form>
+
+      <div class="result">
+        {% if pred_value != 0 %}
+        <p>Estimated Price: LKR {{ pred_value }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <script>
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted || window.performance.navigation.type === 1) {
+      // Clear form fields on page refresh
+      document.querySelectorAll("form input, form select").forEach((field) => {
+        if (field.type === "checkbox") {
+          field.checked = false; // Uncheck checkboxes
+        } else {
+          field.value = ""; // Clear input and select values
+        }
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
